@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#243d35"><meta name="description" content="把每周课表和每日待办放在一起，轻松查看课程、安排任务和记录进度。">
+  <title>我的日常计划</title><link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="#day"><span class="brand-icon">▦</span><span>日常计划<small>我的学习与生活</small></span></a>
+    <nav aria-label="主导航">
+      <button data-view="day" class="nav-item active"><span>◷</span>每日安排</button>
+      <button data-view="week" class="nav-item"><span>▤</span>本周任务</button>
+      <button data-view="courses" class="nav-item"><span>▦</span>每周课表</button>
+    </nav>
+    <div class="sidebar-foot"><span class="dot"></span>第7-19周课表已整理<p>先安排重要的事，<br>也给休息留一点空间。</p><button id="settings-btn">⚙ 作息与数据设置</button></div>
+  </aside>
+  <main>
+    <header class="topbar"><div><span class="eyebrow">MY DAILY PLANNER</span><h1 id="page-title">每日安排</h1></div><div class="top-actions"><button id="mobile-settings" class="icon-btn" aria-label="作息与数据设置">⚙</button><button id="today-btn" class="btn">今天</button><button id="add-btn" class="btn primary">＋ 添加任务</button></div></header>
+    <div class="date-toolbar"><div class="date-nav"><button id="prev-date" class="icon-btn" aria-label="前一天">‹</button><label for="date-picker" class="sr-only">选择日期</label><input id="date-picker" type="date"><button id="next-date" class="icon-btn" aria-label="后一天">›</button></div><span id="week-label" class="pill"></span></div>
+    <div id="week-strip" class="week-strip" aria-label="一周日期"></div>
+    <div id="storage-warning" class="notice hidden" role="alert"></div>
+    <section id="day-view">
+      <div class="day-intro"><div><span id="date-label" class="eyebrow"></span><h2 id="day-heading">今天，按自己的节奏。</h2><p id="day-caption"></p></div><span class="intro-symbol" aria-hidden="true">✦</span></div>
+      <div id="stats" class="stats"></div>
+      <div class="day-columns">
+        <section class="card schedule-card"><div class="card-head"><h3>课程与可用时段</h3><span id="course-count" class="subtle"></span></div><div id="schedule"></div><div class="card-foot">作息时间已录入；第六时段无课，可安排任务。</div></section>
+        <section class="card tasks-card"><div class="card-head"><h3>当天任务</h3><button id="review-btn" class="text-btn">＋ 课后复习</button></div><div class="filters" id="filters"><button data-filter="all" class="selected">全部</button><button data-filter="todo">待完成</button><button data-filter="done">已完成</button></div><div id="tasks"></div><button class="add-line" id="add-line">＋ 为这一天加一件事</button></section>
+      </div>
+      <section class="card note-card"><div class="card-head"><h3>随手记</h3><span class="subtle" id="note-status">自动保存</span></div><label class="sr-only" for="daily-note">当天的笔记</label><textarea id="daily-note" placeholder="今天需要记住的事、完成后的感受，或者明天的一个小目标……"></textarea></section>
+    </section>
+    <section id="week-view" class="hidden">
+      <div class="section-intro"><h2>先看这一周，再安排每一天。</h2><p>课程与任务一起查看。把未排期任务分到课程较少的日子，也可以随时手动调整。</p></div>
+      <div class="week-actions"><button id="queue-btn" class="btn primary">＋ 添加周任务</button><button id="draft-btn" class="btn">安排未排期任务</button><button id="copy-btn" class="btn">复制本周清单给 ChatGPT</button></div>
+      <div class="card queue-card"><div class="card-head"><h3>待安排</h3><span id="queue-count" class="subtle"></span></div><div id="queue"></div></div>
+      <div id="weekly-plan" class="weekly-plan"></div>
+      <div class="notice">排期建议只分配日期，不会猜测具体空闲时间。目前先不创建提醒；网页用于查看和管理安排。</div>
+    </section>
+    <section id="courses-view" class="hidden">
+      <div class="section-intro"><h2>这周的课，一眼看清。</h2><p>只显示本周开课课程，实验课教室随周次更新。长按或点击课程可查看全称。</p></div>
+      <div class="table-scroll"><table id="course-table"><caption class="sr-only">所选周的课程表</caption></table></div>
+      <div class="notice">时段1-5对应原课表五行，已补齐具体时间；第六时段21:10-23:00无课可用。课表覆盖2026年10月12日至2027年1月10日；调课与考试以学校通知为准。</div>
+    </section>
+    <footer>我的日常计划 <span>任务与笔记保存在当前浏览器 · 可导出备份</span></footer>
+  </main>
+  <dialog id="task-dialog"><form id="task-form">
+    <div class="modal-head"><div><span class="eyebrow">ONE THING AT A TIME</span><h2 id="task-modal-title">添加任务</h2></div><button type="button" class="icon-btn close-dialog" aria-label="关闭">×</button></div>
+    <label>要做的事<input name="title" maxlength="150" placeholder="例如：完成模电作业" required></label>
+    <div class="form-row"><label>分类<select name="category"><option value="学习">学习</option><option value="项目">项目</option><option value="生活">生活</option><option value="运动">运动</option><option value="其他">其他</option></select></label><label>重要程度<select name="priority"><option value="2">普通</option><option value="1">重要</option><option value="3">有空再做</option></select></label></div>
+    <label class="checkbox-label"><input type="checkbox" name="unscheduled">先放入本周待安排清单</label>
+    <div class="form-row"><label>安排日期<input name="date" type="date" required></label><label>开始时间（选填）<input name="time" type="time"></label></div>
+    <div class="form-row"><label>预计耗时（分钟）<input name="minutes" type="number" min="5" max="1440" step="5" value="30" required></label><label>截止日期（选填）<input name="due" type="date"></label></div>
+    <label>备注<textarea name="detail" maxlength="1000" placeholder="分几步完成？需要准备什么？"></textarea></label>
+    <p id="task-error" class="error" role="alert"></p><div class="modal-actions"><button type="button" class="btn close-dialog">取消</button><button type="submit" class="btn primary">保存任务</button></div>
+  </form></dialog>
+  <dialog id="settings-dialog"><form id="settings-form"><div class="modal-head"><div><span class="eyebrow">MAKE IT YOURS</span><h2>作息与数据设置</h2></div><button type="button" class="icon-btn close-dialog" aria-label="关闭">×</button></div><p class="subtle">已录入你的作息：前五个时段对应课程，第六时段无课可用；可按需要调整。</p><div id="slot-settings"></div><p id="settings-error" class="error" role="alert"></p><button class="btn primary" type="submit">保存作息</button></form><div class="backup-section"><h3>备份与迁移</h3><p class="subtle">当前浏览器保存你的任务、笔记与作息。换设备时可导出备份，再在另一台设备导入。</p><div class="form-row"><button id="export-btn" class="btn">导出备份</button><label class="btn import-label">导入备份<input id="import-input" type="file" accept="application/json,.json" class="hidden"></label></div><p class="subtle">目前先不创建提醒。你可以把本周清单发给 ChatGPT，让我结合课表安排。</p></div></dialog>
+  <dialog id="confirm-dialog"><h2>删除这件任务？</h2><p class="subtle">删除后不会影响其他任务和课程。</p><div class="modal-actions"><button id="cancel-delete" class="btn">取消</button><button id="confirm-delete" class="btn danger">删除</button></div></dialog>
+  <dialog id="draft-dialog"><h2>本周排期建议</h2><p class="subtle">根据课程数量和已有任务分配日期，不指定开始时间。长任务建议拆成几个小任务。</p><div id="draft-list"></div><div class="modal-actions"><button class="btn close-dialog">取消</button><button id="apply-draft" class="btn primary">应用安排</button></div></dialog>
+  <dialog id="copy-dialog"><h2>本周清单</h2><p class="subtle">复制这段内容发给 ChatGPT，我就能结合课表帮你安排；目前先不创建提醒。</p><textarea id="copy-text" readonly></textarea><div class="modal-actions"><button class="btn close-dialog">关闭</button><button id="retry-copy" class="btn primary">复制内容</button></div></dialog>
+  <dialog id="course-dialog"><h2 id="course-name"></h2><p id="course-room" class="subtle"></p><div class="modal-actions"><button class="btn close-dialog">关闭</button></div></dialog>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="app.js"></script>
+</body></html>
